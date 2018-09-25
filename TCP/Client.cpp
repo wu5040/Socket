@@ -15,7 +15,7 @@ using namespace std;
 
 int my_recv(int conn_fd, char *data_buf, int len)
 {
-    static char recv_buf[MAXLINE]; // 自定义缓冲区，MAXLINE定义在my_recv.h中
+    static char recv_buf[MAXLINE]; // 自定义缓冲区
     static char *pread;            // 指向下一次读取数据的位置
     static int len_remain = 0;     // 自定义缓冲区中剩余字节数
     int i;
@@ -31,6 +31,8 @@ int my_recv(int conn_fd, char *data_buf, int len)
         { // 目的计算机端的socket连接关闭
             return 0;
         }
+        int len=strlen(recv_buf);
+        recv_buf[len]='\n';
         pread = recv_buf; // 重新初始化pread指针
     }
 
@@ -52,6 +54,7 @@ int my_recv(int conn_fd, char *data_buf, int len)
     return i; // 读取成功
 }
 
+//获取用户输入信息：用户名和密码
 void input_userinfo(int sockfd, const char *prompt)
 {
     char input_buf[32];
@@ -60,6 +63,7 @@ void input_userinfo(int sockfd, const char *prompt)
     int count = 0;
     do
     {
+        
         printf("%s:", prompt);
 
         //获取用户输入存放到input_buf，并做相应处理
@@ -99,13 +103,15 @@ void input_userinfo(int sockfd, const char *prompt)
 void send_msg(int sockfd)
 {
     char input_buf[MAXLINE];
-    printf("send msg:");
-
+    cout<<"send msg:";
+    getchar();
+    int i=0;
     //获取用户输入存放到input_buf，并做相应处理
-    cin >> input_buf;
+    while((input_buf[i]=getchar())!='\n')
+        i++;
+    input_buf[i]='\n';
+    input_buf[++i]='\0';
     int len = strlen(input_buf);
-    input_buf[len++] = '\n';
-    input_buf[len] = '\0';
 
     //将读取到的用户信息发送给服务器
     if (send(sockfd, input_buf, strlen(input_buf), 0) < 0)
@@ -123,7 +129,7 @@ int main(int argc, char **argv)
 
     if (argc != 2)
     {
-        printf("usage: ./client <ipaddress>\n");
+        printf("usage: ./c.out <ipaddress>\n");
         exit(0);
     }
 

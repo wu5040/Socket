@@ -21,12 +21,13 @@ struct userinfo
 };
 struct userinfo users[] = {
     {"wsg", "123"},
-    {"qqq", "456"}};
+    {"qqq", "456"}
+};
 
 
 int my_recv(int conn_fd, char *data_buf, int len)
 {
-    static char recv_buf[MAXLINE]; // 自定义缓冲区，MAXLINE定义在my_recv.h中
+    static char recv_buf[MAXLINE]; // 自定义缓冲区
     static char *pread;            // 指向下一次读取数据的位置
     static int len_remain = 0;     // 自定义缓冲区中剩余字节数
     int i;
@@ -74,7 +75,7 @@ int check_name(const char *name)
         return -2;
     }
     //用户名存在，返回该用户在结构体users中的下标
-    for (i = 0; i < 2; i++)
+    for (i = 0; i < USERNUM; i++)
         if (strcmp(name, users[i].username) == 0)
             return i;
 
